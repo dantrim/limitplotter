@@ -1,0 +1,5 @@
+*.eps
+*.root
+*.pyc
+*.o
+*.so
