@@ -20,6 +20,8 @@ conf = gridConf
 ###########################################
 conf.base_region = "SRwt"
 
+regions = ["SRwt"]
+
 proper_names = {}
 proper_names["SRwt"] = "SRw+SRt"
 
@@ -81,6 +83,8 @@ conf.decay_process = "#scale[0.8]{#tilde{t} #rightarrow bW#tilde{#chi}_{1}^{ 0} 
 
 ## best SR per point
 conf.do_best_sr_per_point = False
+
+conf.do_limit_plot = True
 
 ## CLs/Sig per point
 conf.show_exp_cls = False

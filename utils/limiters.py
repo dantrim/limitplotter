@@ -18,7 +18,7 @@ class Region() :
         self.up_limit_results_file = ""
         self.dn_limit_results_file = ""
 
-    def print(self) :
+    def Print(self) :
         print "Region:  %s"%self.name
 
 class Signal() :
@@ -26,8 +26,6 @@ class Signal() :
         self.mX = mX_
         self.mY = mY_
 
-    def print(self) :
-        print "Signal: (%.1f,%.1f)"%(float(self.mX), float(self.mY))
 
         ####################################
         ## CLs
@@ -85,6 +83,8 @@ class Signal() :
         self.bestObservedSigUp1s    = 0.0       ### < observed significnace sigma_theory +1
         self.bestObservedSigDn1s    = 0.0       ### < observed significance sigma_theory -1
     
+    def Print(self) :
+        print "Signal: (%.1f,%.1f)"%(float(self.mX), float(self.mY))
 
 
         

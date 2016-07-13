@@ -13,7 +13,7 @@ import sys
 sys.path.append(os.environ['LIMPLOTDIR'])
 
 #limitplotter
-from limitplotter.limiters import *
+from limitplotter.utils.limiters import *
 
 class GridConfiguration() :
     def __init__(self, grid_) :
@@ -26,11 +26,14 @@ class GridConfiguration() :
         # lepton channel, if any
         self.channel = ""
 
+        self.regions = []
+
         # container for the signal grid
         self.signals = []
 
         # canvas for limit plot
         self.limit_canvas = ROOT.TCanvas("c_limit", "", 768, 768)
+        self.do_limit_plot = True
         self.show_obs_cls = False
         self.show_exp_cls = True
         self.show_obs_sig = False
@@ -50,7 +53,7 @@ class GridConfiguration() :
     def collect_region_limit_result_files(self, r) :
         lim_results_dir = str(os.environ['LIMPLOTDIR'])
         if not lim_results_dir.endswith("/") : lim_results_dir += "/"
-        lim_results_dir += "limit_results/"
+        lim_results_dir += "limitplotter/limit_results/"
 
         if self.channel != "" :
             in_lim_dir = "%s_%s_%s/"%(r.name, self.channel, self.grid)
@@ -60,25 +63,25 @@ class GridConfiguration() :
             dn  = glob.glob("%s%s*Down_limit_results.txt"%(lim_results_dir, in_lim_dir))
 
             if len(nom) > 0 and len(nom) == 1 :
-                print "collection_region_limit_result_files    nominal limit results file: %s"%nom[0]
+                print "collect_region_limit_result_files    nominal limit results file: %s"%nom[0]
                 r.nominal_limit_results_file = nom[0]
             else :
-                print "collection_region_limit_result_files    ERROR nominal limit results file (%s%s*Nominal_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
+                print "collect_region_limit_result_files    ERROR nominal limit results file (%s%s*Nominal_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
                 sys.exit()
             if len(up) > 0 and len(up) == 1 :
-                print "collection_region_limit_result_files    up limit results file: %s"%up[0]
+                print "collect_region_limit_result_files    up limit results file: %s"%up[0]
                 r.up_limit_results_file = up[0]
             else :
-                print "collection_region_limit_result_files    ERROR up limit results file (%s%s*Up_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
-                sys.exit()
+                print "collect_region_limit_result_files    ERROR up limit results file (%s%s*Up_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
+                #sys.exit()
             if len(dn) > 0 and len(dn) == 1 :
-                print "collection_region_limit_result_files    down limit results file: %s"dn[0]
+                print "collect_region_limit_result_files    down limit results file: %s"%dn[0]
                 r.dn_limit_results_file = dn[0]
             else :
-                print "collection_region_limit_result_files    ERROR down limit results file (%s%s*Down_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
-                sys.exit()
+                print "collect_region_limit_result_files    ERROR down limit results file (%s%s*Down_limit_results.txt) not found"%(lim_results_dir, in_lim_dir)
+                #sys.exit()
         else :
-            print "collection_region_limit_result_files    You must provide a signal channel!"
+            print "collect_region_limit_result_files    You must provide a signal channel!"
             sys.exit()
 
     def collect_limit_result_files(self) :
@@ -162,7 +165,7 @@ class GridConfiguration() :
                             s.observedSigUp1s[r.name]   = float(cols[obsSigidx])
             else :
                 print "fill_raw_results    ERROR up limits results file is \"\""
-                sys.exit()
+                #sys.exit()
 
             if r.dn_limit_results_file != "" :
                 dn_file = r.dn_limit_results_file
@@ -181,4 +184,4 @@ class GridConfiguration() :
                             s.observedSigDn1s[r.name]   = float(cols[obsSigidx])
             else :
                 print "fill_raw_results    ERROR down limit results file is \"\""
-                sys.exit()
+                #sys.exit()

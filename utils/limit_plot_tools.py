@@ -66,7 +66,7 @@ def get_atlas_label() :
 #  Lumi Label
 # -----------------------------
 def get_lumi_label() :
-    label = "#scale[0.8]{#int Ldt = 20.3 fb^{-1}, #sqrt{s} = 8 TeV}"
+    label = "#scale[0.8]{#int Ldt = 5.82 fb^{-1}, #sqrt{s} = 13 TeV}"
     return label
 
 ''' ---------------------- '''
@@ -170,23 +170,38 @@ def legend_band_entry(legend, name, fill_color, fill_style, line_color, line_sty
 ''' ---------------------- '''
 '''     TGraph Methods     '''
 ''' ---------------------- '''
-def make_contour(conf, type="exp") :
+def make_contour(conf, reg_="", type="exp", pwc=False) :
     '''
     Make a 95% CL contour (TGraph) from the input signals
     '''
     signals = conf.signals
 
     g = r.TGraph2D(1)
+    g.Clear()
     g.SetTitle("g_"+type)
     for s in signals :
         signif, x, y = 0.0, float(s.mX), float(s.mY)
-        if   type == "obs"   : signif = s.bestObservedSig
-        elif type == "obsUp" : signif = s.bestObservedSigUp1s
-        elif type == "obsDn" : signif = s.bestObservedSigDn1s
-        elif type == "exp"   : signif = s.bestExpectedSig
-        elif type == "expUp" : signif = s.bestExpectedSigUp1s
-        elif type == "expDn" : signif = s.bestExpectedSigDn1s
-        g.SetPoint(g.GetN(), x, y, signif)
+        if pwc :
+            if   type == "obs"   : signif = s.bestObservedSig
+            elif type == "obsUp" : signif = s.bestObservedSigUp1s
+            elif type == "obsDn" : signif = s.bestObservedSigDn1s
+            elif type == "exp"   : signif = s.bestExpectedSig
+            elif type == "expUp" : signif = s.bestExpectedSigUp1s
+            elif type == "expDn" : signif = s.bestExpectedSigDn1s
+        else :
+            if reg_ == "" :
+                print "make_contour    ERROR you must provide a region"
+                sys.exit()
+            if   type == "obs"   : signif = s.observedSig[reg_]
+            elif type == "obsUp" : signif = s.observedSigUp1s[reg_]
+            elif type == "obsDn" : signif = s.observedSigDn1s[reg_]
+            elif type == "exp"   : signif = s.expectedSig[reg_]
+            elif type == "expUp" : signif = s.expectedSigUp1s[reg_]
+            elif type == "expDn" : signif = s.expectedSigDn1s[reg_]
+
+        print signif
+        print "(%.1f,%.1f) : %.1f"%(x, y, float(signif))
+        g.SetPoint(g.GetN(), x, y, float(signif))
 
     hist = None
     hist = r.TH2F("tmp_"+type, "tmp_"+type, 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
@@ -202,6 +217,7 @@ def make_contour(conf, type="exp") :
     h.SetContourLevel(0, level)
     c = r.TCanvas('tmp_can_'+type, '')
     c.cd()
+    h.Smooth()
     h.Draw('CONT LIST')
     c.Update()
     contours = r.gROOT.GetListOfSpecials().FindObject('contours')
