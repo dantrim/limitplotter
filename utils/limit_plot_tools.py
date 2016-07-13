@@ -77,7 +77,7 @@ def make_frame(conf) :
     Make the frame that will provide the axes on which to make
     the plots
     '''
-    frame = r.TH2F("frame", "#scale[0.8]{%s / ee + mm + em}"%conf.grid, 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
+    frame = r.TH2F("frame", "", 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
     
     frame.SetLabelOffset( 0.012, "X")
     frame.SetLabelOffset( 0.012, "Y")
@@ -217,7 +217,7 @@ def make_contour(conf, reg_="", type="exp", pwc=False) :
     h.SetContourLevel(0, level)
     c = r.TCanvas('tmp_can_'+type, '')
     c.cd()
-    h.Smooth()
+    #h.Smooth()
     h.Draw('CONT LIST')
     c.Update()
     contours = r.gROOT.GetListOfSpecials().FindObject('contours')

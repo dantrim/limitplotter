@@ -62,6 +62,9 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
             val = float(s.observedSig[reg_])
         elif conf.show_exp_sig :
             val = float(s.expectedSig[reg_])
+
+        if "SRwt" in reg_ and y > 300 : continue
+
         tex.DrawLatex(x, y, "%.2f"%float(val))
 
     z_title = ""
@@ -70,7 +73,8 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
     elif conf.show_obs_sig : z_title = "Numbers give the observed Significance"
     elif conf.show_exp_sig : z_title = "Numbers give the expected Significance"
 
-    draw_text(0.96,0.44,ROOT.kBlack,z_title,angle=90.0, size=0.03)
+    draw_text(0.96,0.38,ROOT.kBlack,z_title,angle=90.0, size=0.03)
+    #draw_text(0.96,0.44,ROOT.kBlack,z_title,angle=90.0, size=0.03)
     c.Update()
 
 def draw_upperlimit_xsec(conf) :
@@ -93,6 +97,44 @@ def get_limit_output_name(conf) :
     elif conf.show_obs_sig : outname += "obsSig" 
     outname += ".eps"
     return outname
+
+def get_forbiddenlines(conf) :
+
+    out_lines = []
+
+    if grid == "bWN" :
+
+        x_low = conf.xlow
+        y_low = conf.ylow
+
+        # mW line
+        y_high_w = 320
+        slope = 1.0
+        y_w = slope * x_low - 84.8
+        beginx = x_low
+        endx_w = 1.2*320
+
+        line_w = ROOT.TLine(beginx, y_w, endx_w, endx_w * slope - 84.8)
+        line_w.SetLineStyle(2)
+        line_w.SetLineWidth(2)
+        line_w.SetLineColor(ROOT.kGray+3)
+        out_lines.append(line_w)
+
+        # mTop line
+        beginx = 172.5
+        y_t = 0.0
+        endx_t = 420
+
+        line_t = ROOT.TLine(beginx, y_t, endx_t, endx_t * slope - 172.5)
+        line_t.SetLineStyle(2)
+        line_t.SetLineWidth(2)
+        line_t.SetLineColor(ROOT.kGray+3)
+        out_lines.append(line_t)
+
+    else :
+        print "get_forbiddenlines    ERROR unhandled grid. Will not draw kinematic boundary lines."
+    return out_lines
+
 
 def make_limit_plot(conf) :
     print "make_limit_plot..."
@@ -151,10 +193,6 @@ def make_limit_plot(conf) :
         g.Draw("CP same")
     c.Update()
 
-    #####################################
-    # draw the forbidden lines
-    #####################################
-    print "make_limit_plot    NEED TO ADD \"FORBIDDEN\" LINES"
 
     #####################################
     # draw official and process labels
@@ -167,14 +205,57 @@ def make_limit_plot(conf) :
     ######################################
     # draw the legend
     ######################################
-    print "make_limit_plot    NEED TO ADD LEGEND"
+    leg = make_default_legend(0.55,0.72,0.89,0.91)
+    #leg = make_default_legend(0.55,0.77,0.88,0.92)
+    leg.AddEntry(g_obs, "Observed limit","l")
+
+    legend_band_entry(leg, "Expected limit (#pm1 #sigma_{exp})", ROOT.TColor.GetColor(c_BandYellow), 1001, ROOT.TColor.GetColor(c_Expected), 7, 2)
+
+
 
 
     ######################################
     # draw previous results
     ######################################
-    print "make_limit_plot    NEED TO GET PREVIOUS CONTOURS"
+    if conf.show_previous_8TeV_result :
+        rfile = ROOT.TFile(conf.previous_result_file)
+        prev_wwlike = rfile.Get(conf.previous_contours["wwlike"])
+        prev_stop1l = rfile.Get(conf.previous_contours["stop1l"])
+        prev_stop2l = rfile.Get(conf.previous_contours["stop2l"])
 
+        prev_wwlike.SetLineColor(ROOT.TColor.GetColor("#FF4444"))
+        prev_stop1l.SetLineColor(ROOT.TColor.GetColor("#F685E4"))
+        prev_stop2l.SetLineColor(ROOT.TColor.GetColor("#B93B8F"))
+
+        prev_wwlike.SetLineWidth(3)
+        prev_stop1l.SetLineWidth(3)
+        prev_stop2l.SetLineWidth(3)
+
+        #prev_wwlike.SetFillStyle( 1001 )
+        #prev_wwlike.SetFillStyle( 3005 )
+        #prev_wwlike.SetFillColorAlpha(ROOT.TColor.GetColor("#FF4444"), 0.1)
+
+        prev_wwlike.Draw("same")
+        prev_stop1l.Draw("same")
+        prev_stop2l.Draw("same")
+
+        leg.AddEntry(prev_wwlike, "WW-like 8 TeV","l")
+        leg.AddEntry(prev_stop2l, "Stop-2L 8 TeV","l")
+        leg.AddEntry(prev_stop1l, "Stop-1L 8 TeV","l")
+
+
+    # now that we have all the contours, draw the legend
+    leg.Draw()
+    c.Update()
+
+
+
+    #####################################
+    # draw the forbidden lines
+    #####################################
+    kin_lines = get_forbiddenlines(conf)
+    for line_ in kin_lines :
+        line_.Draw()
 
     ######################################
     # draw CLs on plot

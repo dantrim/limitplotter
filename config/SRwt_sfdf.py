@@ -99,8 +99,12 @@ conf.do_xsec_plot = False
 ########################################
 # 8 TeV results
 ########################################
-conf.show_previous_8TeV_result = False
-conf.previous_result_file = ""
+conf.show_previous_8TeV_result = True
+conf.previous_result_file = "/data/uclhc/uci/user/dantrim/n0225val/limitplotter/previous_contours/previous_contours_3body.root"
+conf.previous_contours = {}
+conf.previous_contours["wwlike"] = "obs_nominal"
+conf.previous_contours["stop1l"] = "stop1lobs"
+conf.previous_contours["stop2l"] = "stop2lobs"
 
 
 #######################################
