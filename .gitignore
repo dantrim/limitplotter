@@ -1,4 +1,6 @@
 *.eps
+*.swp
+*.swo
 *.root
 *.pyc
 *.o
