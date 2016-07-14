@@ -48,7 +48,8 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
 
     tex = ROOT.TLatex(0.0,0.0,"")
     tex.SetTextFont(42)
-    tex.SetTextSize(0.5 * tex.GetTextSize())
+    tex.SetTextSize(0.35 * tex.GetTextSize())
+    #tex.SetTextSize(0.5 * tex.GetTextSize())
     markers = []
     for s in conf.signals :
         val, x, y = 0.0, 0.0, 0.0
@@ -63,7 +64,7 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
         elif conf.show_exp_sig :
             val = float(s.expectedSig[reg_])
 
-        if "SRwt" in reg_ and y > 300 : continue
+        #if "SRwt" in reg_ and y > 300 : continue
 
         tex.DrawLatex(x, y, "%.2f"%float(val))
 
@@ -112,7 +113,8 @@ def get_forbiddenlines(conf) :
         slope = 1.0
         y_w = slope * x_low - 84.8
         beginx = x_low
-        endx_w = 1.2*320
+        endx_w = 400
+        #endx_w = 1.2*320
 
         line_w = ROOT.TLine(beginx, y_w, endx_w, endx_w * slope - 84.8)
         line_w.SetLineStyle(2)
@@ -123,13 +125,23 @@ def get_forbiddenlines(conf) :
         # mTop line
         beginx = 172.5
         y_t = 0.0
-        endx_t = 420
+        endx_t = 450
 
         line_t = ROOT.TLine(beginx, y_t, endx_t, endx_t * slope - 172.5)
         line_t.SetLineStyle(2)
         line_t.SetLineWidth(2)
         line_t.SetLineColor(ROOT.kGray+3)
         out_lines.append(line_t)
+
+        # mchi line
+        beginx = x_low
+        y_chi = 100
+        endx_chi = 317
+        line_chi = ROOT.TLine(beginx, y_chi, endx_chi, endx_chi * slope) 
+        line_chi.SetLineStyle(2)
+        line_chi.SetLineWidth(2)
+        line_chi.SetLineColor(ROOT.kGray+3)
+        out_lines.append(line_chi)
 
     else :
         print "get_forbiddenlines    ERROR unhandled grid. Will not draw kinematic boundary lines."
@@ -200,6 +212,9 @@ def make_limit_plot(conf) :
     draw_top_left_label(get_atlas_label(),  (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-1.6*ROOT.gPad.GetTopMargin()))
     draw_top_left_label(get_lumi_label(),   (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-2.7*ROOT.gPad.GetTopMargin()))
     draw_top_left_label(conf.decay_process, (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-3.65*ROOT.gPad.GetTopMargin()))
+    if grid=="bWN" and region=="SRwt" :
+        region_label = "SR_{W}^{3-body} + SR_{t}^{3-body}" 
+        draw_top_left_label(region_label, (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-4.7*ROOT.gPad.GetTopMargin()))  
     c.Update()
 
     ######################################
@@ -256,6 +271,19 @@ def make_limit_plot(conf) :
     kin_lines = get_forbiddenlines(conf)
     for line_ in kin_lines :
         line_.Draw()
+
+    if "bWN" in grid :
+        mwline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < m_{b} + m_{W}"
+        mtline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < m_{t}"
+        mxline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < 0"
+
+        draw_text( 0.55, 0.51, ROOT.kGray, mwline_text, size=0.025, angle=42)
+        #draw_text( 0.41, 0.4, ROOT.kGray, mwline_text, size=0.025, angle=42)
+        draw_text( 0.75, 0.51, ROOT.kGray, mtline_text, size=0.025, angle=42)
+        #draw_text( 0.54, 0.3, ROOT.kGray+2, mtline_text, size=0.025, angle=42)
+        draw_text( 0.36, 0.51, ROOT.kGray, mxline_text, size=0.025, angle=42)
+    c.Update()
+        
 
     ######################################
     # draw CLs on plot

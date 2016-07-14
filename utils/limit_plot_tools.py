@@ -59,7 +59,7 @@ def draw_top_left_label(label, xpos=None, ypos=None, align=13) :
 #  ATLAS label
 # -----------------------------
 def get_atlas_label() :
-    label = "#it{ATLAS Internal}"
+    label = "#it{ATLAS} Internal"
     return label
 
 # -----------------------------
@@ -77,7 +77,9 @@ def make_frame(conf) :
     Make the frame that will provide the axes on which to make
     the plots
     '''
-    frame = r.TH2F("frame", "", 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
+    nbins = 50
+    frame = r.TH2F("frame", "", nbins, conf.xlow, conf.xhigh, nbins, conf.ylow, conf.yhigh)
+    #frame = r.TH2F("frame", "", 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
     
     frame.SetLabelOffset( 0.012, "X")
     frame.SetLabelOffset( 0.012, "Y")

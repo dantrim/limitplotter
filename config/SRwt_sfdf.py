@@ -62,7 +62,7 @@ conf.y_title = "m_{#tilde{#chi}_{1}^{ 0}} [GeV]"
 conf.xlow   = 100       # GeV
 conf.xhigh  = 450       # GeV
 conf.ylow   = 0         # GeV 
-conf.yhigh  = 420       # GeV
+conf.yhigh  = 440       # GeV
 
 
 #######################################
