@@ -65,7 +65,8 @@ def get_final_name() :
         if upperlimit :
             return "test_%s_%s_%s_Output_upperlimit.root"%(region, channel, grid)
         else :
-            return "test_%s_%s_%s_Output_hypotest.root"%(region, channel, grid)
+            #return "test_%s_%s_%s_Output_hypotest.root"%(region, channel, grid)
+            return "test_%s_%s_%s_Output_fixSigXSec%s_hypotest.root"%(region, channel, grid, syst)
             #return "%s_%s_%s_%s_Output_hypotest.root"%(region, channel, grid, syst)
     else :
         print "get_final_name    ERROR requested grid not supported. Exiting."
@@ -84,7 +85,8 @@ def hadd_workspace_files() :
 
     if grid == "bWN" and syst != "nom" :
         print "ERROR currently we only handle the nom case for your grid (%s)"%grid
-    cmd = "hadd -f %s%s %s%s_%s_%s*Output_hypotest.root"%(results_dir, final_results_filename, results_dir, region, channel, grid)
+    #cmd = "hadd -f %s%s %s%s_%s_%s*Output_hypotest.root"%(results_dir, final_results_filename, results_dir, region, channel, grid)
+    cmd = "hadd -f %s%s %s%s_%s_%s*Output_fixSigXSec%s_hypotest.root"%(results_dir, final_results_filename, results_dir, region, channel, grid, syst)
     print "hadd_workspace_files    calling %s"%cmd
     subprocess.call(cmd, shell=True)
 
@@ -103,8 +105,8 @@ def make_harvest_list_files() :
     outputfile = ROOT.CollectAndWriteHypoTestResults(inputfile, formatting, "mC1:mN1", cut_string)
 
 def move_list_files() :
-    listdir = "./list_files/%s_%s_%s/"%(region, channel, grid)
-    #listdir = "../list_files/%s_%s_%s_%s/"%(region, channel, grid, syst)
+    #listdir = "./list_files/%s_%s_%s/"%(region, channel, grid)
+    listdir = "./list_files/%s_%s_%s_%s/"%(region, channel, grid, syst)
 
     cmd = "mkdir -p %s"%listdir
     print "Moving list files to %s"%listdir
@@ -133,12 +135,12 @@ def humanize_list_files(listdir) :
     '''
 
 
-    in_list = "%stest_%s_%s_%s_Output_hypotest__1_harvest_list.json"%(listdir, region, channel, grid)
+    in_list = "%stest_%s_%s_%s_Output_fixSigXSec%s_hypotest__1_harvest_list.json"%(listdir, region, channel, grid, syst)
     #in_list = "%s%s_%s_%s_%s_Output_hypotest__1_harvest_list.json"%(listdir, region, channel, grid, syst)
     limit_result_dir = "./limit_results/%s_%s_%s/"%(region, channel, grid)
     mk_limresult = "mkdir -p %s"%(limit_result_dir)
     subprocess.call(mk_limresult, shell=True)
-    out_result = "%s%s_%s_%s_limit_results.txt"%(limit_result_dir, region, channel, grid)
+    out_result = "%s%s_%s_%s_%s_limit_results.txt"%(limit_result_dir, region, channel, grid, syst)
     #out_result = "%s%s_%s_%s_limit_results.txt"%(limit_result_dir, region, channel, grid, syst)
 
     outfile_template = "mX\tmY\tCLs\tCLsexp\tclsu1s\tclsd1s\tObsSig\tExpSig\tExpSigUp1s\tExpSigDn1s\n"

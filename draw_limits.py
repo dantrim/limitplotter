@@ -169,17 +169,28 @@ def make_limit_plot(conf) :
 
     # obs
     g_obs       = make_contour(conf, reg_=region, type="obs", pwc=False)
-    print "make_limit_plot   NOT GRABBING UP/DOWN OBSERVED CONTOURS"
-    g_obsUp = None
-    g_obsDn = None
-    #g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
-    #g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
+    #print "make_limit_plot   NOT GRABBING UP/DOWN OBSERVED CONTOURS"
+    #g_obsUp = None
+    #g_obsDn = None
+    g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
+    g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
 
     # exp
     g_exp       = make_contour(conf, reg_=region, type="exp", pwc=False)
     g_expUp     = make_contour(conf, reg_=region, type="expUp", pwc=False)
     g_expDn     = make_contour(conf, reg_=region, type="expDn", pwc=False)
 
+   # g_obs.SetName("stop2l_3body_observed")
+   # g_obs.SaveAs("observed_contour.root")
+
+   # g_exp.SetName("stop2l_3body_expected")
+   # g_exp.SaveAs("expected_contour.root")
+
+   # g_expUp.SetName("stop2l_3body_expected_u1s")
+   # g_expUp.SaveAs("expected_contour_u1s.root")
+
+   # g_expDn.SetName("stop2l_3body_expected_d1s")
+   # g_expDn.SaveAs("expected_contour_d1s.root")
 
     #################################
     # draw the band around the
@@ -194,7 +205,7 @@ def make_limit_plot(conf) :
     g_obs.SetLineColor(ROOT.TColor.GetColor( c_Observed ))
     g_obs.SetLineStyle(1)
     g_obs.SetLineWidth(3)
-    g_obs.Draw("CP same")
+    g_obs.Draw("C same")
     c.Update()
 
     for g in [g_obsUp, g_obsDn] :
@@ -202,7 +213,7 @@ def make_limit_plot(conf) :
         g.SetLineColor(ROOT.TColor.GetColor( c_Observed ))
         g.SetLineStyle(3)
         g.SetLineWidth(2)
-        g.Draw("CP same")
+        g.Draw("C same")
     c.Update()
 
 

@@ -66,7 +66,7 @@ def get_atlas_label() :
 #  Lumi Label
 # -----------------------------
 def get_lumi_label() :
-    label = "#scale[0.8]{#int Ldt = 5.82 fb^{-1}, #sqrt{s} = 13 TeV}"
+    label = "#scale[0.8]{#int Ldt = 13.3 fb^{-1}, #sqrt{s} = 13 TeV}"
     return label
 
 ''' ---------------------- '''
@@ -201,12 +201,13 @@ def make_contour(conf, reg_="", type="exp", pwc=False) :
             elif type == "expUp" : signif = s.expectedSigUp1s[reg_]
             elif type == "expDn" : signif = s.expectedSigDn1s[reg_]
 
-        print signif
-        print "(%.1f,%.1f) : %.1f"%(x, y, float(signif))
+        #print signif
+        print "%s - (%.1f,%.1f) : %.1f"%(type, x, y, float(signif))
         g.SetPoint(g.GetN(), x, y, float(signif))
 
     hist = None
-    hist = r.TH2F("tmp_"+type, "tmp_"+type, 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
+   #hist = r.TH2F("tmp_"+type, "tmp_"+type, 50, conf.xlow, conf.xhigh, 50, conf.ylow, conf.yhigh)
+    hist = r.TH2F("tmp_"+type, "tmp_"+type, 500, conf.xlow, conf.xhigh, 500, conf.ylow, conf.yhigh)
     g.SetHistogram(hist)
     pvalue = 0.05
     level = r.TMath.NormQuantile(1.0-pvalue)
@@ -219,7 +220,7 @@ def make_contour(conf, reg_="", type="exp", pwc=False) :
     h.SetContourLevel(0, level)
     c = r.TCanvas('tmp_can_'+type, '')
     c.cd()
-    #h.Smooth()
+    h.Smooth()
     h.Draw('CONT LIST')
     c.Update()
     contours = r.gROOT.GetListOfSpecials().FindObject('contours')
