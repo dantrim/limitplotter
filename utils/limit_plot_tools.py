@@ -36,7 +36,8 @@ def draw_text(x, y, color, text, size=0.04, angle=0.0) :
     l = r.TLatex()
     l.SetTextSize(size)
     l.SetNDC()
-    l.SetTextFont(62)
+    l.SetTextFont(42)
+    #l.SetTextFont(62)
     l.SetTextColor(color)
     l.SetTextAngle(angle)
     l.DrawLatex(x,y,text)
@@ -44,9 +45,10 @@ def draw_text(x, y, color, text, size=0.04, angle=0.0) :
 # -----------------------------
 #  top left label
 # -----------------------------
-def draw_top_left_label(label, xpos=None, ypos=None, align=13) :
+def draw_top_left_label(label, xpos=None, ypos=None, align=13, font=42) :
     tex = r.TLatex(0.0,0.0,'')
-    tex.SetTextFont(62)
+    tex.SetTextFont(font)
+    #tex.SetTextFont(62)
     tex.SetTextSize(0.75 * tex.GetTextSize())
     tex.SetNDC()
     tex.SetTextAlign(align)
@@ -59,14 +61,14 @@ def draw_top_left_label(label, xpos=None, ypos=None, align=13) :
 #  ATLAS label
 # -----------------------------
 def get_atlas_label() :
-    label = "#it{ATLAS} Internal"
+    label = "ATLAS"
     return label
 
 # -----------------------------
 #  Lumi Label
 # -----------------------------
 def get_lumi_label() :
-    label = "#scale[0.8]{#int Ldt = 13.3 fb^{-1}, #sqrt{s} = 13 TeV}"
+    label = "#scale[0.8]{L = 13.3 fb^{-1}, #sqrt{s} = 13 TeV}"
     return label
 
 ''' ---------------------- '''
@@ -156,7 +158,7 @@ def make_default_legend(xl,yl,xh,yh) :
     leg.SetFillColor(0)
     leg.SetFillStyle(0)
     leg.SetBorderSize(0)
-    leg.SetTextFont(62)
+    leg.SetTextFont(42)
     return leg
 
 def legend_band_entry(legend, name, fill_color, fill_style, line_color, line_style, line_width) :

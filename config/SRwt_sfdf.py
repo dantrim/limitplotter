@@ -40,7 +40,7 @@ region_marker_styles = [ROOT.kFullCircle, ROOT.kFullSquare, ROOT.kFullTriangleUp
 #########################################
 # location of HF results directory
 #########################################
-conf.results_dir = "/data/uclhc/uci/user/dantrim/SuperFitter/HistFitter-00-00-49-TestExclFix/results/" 
+conf.results_dir = "jul28_results/results/"
 
 ########################################
 # location of HF logs used for gathering
@@ -53,8 +53,10 @@ conf.ul_name_suffix = "_limitOnMu.log"
 ########################################
 # axis labels
 ########################################
-conf.x_title = "m_{#tilde{t}} [GeV]"
-conf.y_title = "m_{#tilde{#chi}_{1}^{ 0}} [GeV]"
+#conf.x_title = "m_{#tilde{t}} [GeV]"
+conf.x_title = "m(#tilde{t}_{1}) [GeV]"
+#conf.y_title = "m_{#tilde{#chi}_{1}^{ 0}} [GeV]"
+conf.y_title = "m(#tilde{#chi}_{1}^{ 0}) [GeV]"
 
 #######################################
 # limit plot grid ranges
@@ -74,7 +76,7 @@ conf.yhigh  = 440       # GeV
 #######################################
 # decay process
 #######################################
-conf.decay_process = "#scale[0.8]{#tilde{t} #rightarrow bW#tilde{#chi}_{1}^{ 0}  }"
+conf.decay_process = "#scale[0.8]{#tilde{t}_{1} #rightarrow bW#tilde{#chi}_{1}^{ 0}  }"
 
 
 ######################################################

@@ -55,6 +55,7 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
         val, x, y = 0.0, 0.0, 0.0
         x = float(s.mX)
         y = float(s.mY)
+        if x > 400 : continue
         if conf.show_exp_cls :
             val = float(s.expectedCLs[reg_])
         elif conf.show_obs_cls :
@@ -163,6 +164,50 @@ def make_limit_plot(conf) :
     frame.GetYaxis().SetTitle(conf.y_title)
     c.Update()
 
+    ################################# 
+    # make a legend
+    ################################# 
+    leg = make_default_legend(0.55,0.72,0.89,0.91)
+
+    ######################################
+    # draw previous results
+    ######################################
+    if conf.show_previous_8TeV_result :
+        rfile = ROOT.TFile(conf.previous_result_file)
+        prev_wwlike = rfile.Get(conf.previous_contours["wwlike"])
+        prev_stop1l = rfile.Get(conf.previous_contours["stop1l"])
+        prev_stop2l = rfile.Get(conf.previous_contours["stop2l"])
+
+        #prev_wwlike.SetLineColor(ROOT.TColor.GetColor("#FF4444"))
+        #prev_stop1l.SetLineColor(ROOT.TColor.GetColor("#F685E4"))
+        #prev_stop2l.SetLineColor(ROOT.TColor.GetColor("#B93B8F"))
+
+        prev_wwlike.SetLineColor((ROOT.kAzure+6)+1)
+        prev_stop1l.SetLineColor((ROOT.kSpring-5)-1)
+        prev_stop2l.SetLineColor((ROOT.kOrange-3)-2)
+
+        prev_wwlike.SetFillColorAlpha(ROOT.kAzure+6, 0.65)
+        prev_stop1l.SetFillColorAlpha(ROOT.kSpring-5, 1.00)
+        prev_stop2l.SetFillColorAlpha(ROOT.kOrange-3,0.65)
+
+        prev_wwlike.SetLineWidth(3)
+        prev_stop1l.SetLineWidth(3)
+        prev_stop2l.SetLineWidth(3)
+
+        #prev_wwlike.SetFillStyle( 1001 )
+        #prev_wwlike.SetFillStyle( 3005 )
+        #prev_wwlike.SetFillColorAlpha(ROOT.TColor.GetColor("#FF4444"), 0.1)
+
+        prev_stop1l.Draw("same F")
+        prev_stop2l.Draw("same F")
+        prev_wwlike.Draw("same F")
+
+        prev_stop1l.Draw("same")
+        prev_stop2l.Draw("same")
+        prev_wwlike.Draw("same")
+
+
+
     ################################
     # grab the 95% CL contours
     ################################
@@ -220,7 +265,8 @@ def make_limit_plot(conf) :
     #####################################
     # draw official and process labels
     #####################################
-    draw_top_left_label(get_atlas_label(),  (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-1.6*ROOT.gPad.GetTopMargin()))
+    draw_top_left_label(get_atlas_label(),  (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-1.6*ROOT.gPad.GetTopMargin()), font=72)
+    draw_top_left_label("Preliminary", (0.125 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-1.6*ROOT.gPad.GetTopMargin()))
     draw_top_left_label(get_lumi_label(),   (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-2.7*ROOT.gPad.GetTopMargin()))
     draw_top_left_label(conf.decay_process, (0.0 + 1.3*ROOT.gPad.GetLeftMargin()), (1.0-3.65*ROOT.gPad.GetTopMargin()))
     if grid=="bWN" and region=="SRwt" :
@@ -231,43 +277,24 @@ def make_limit_plot(conf) :
     ######################################
     # draw the legend
     ######################################
-    leg = make_default_legend(0.55,0.72,0.89,0.91)
+    #leg = make_default_legend(0.55,0.72,0.89,0.91)
     #leg = make_default_legend(0.55,0.77,0.88,0.92)
-    leg.AddEntry(g_obs, "Observed limit","l")
+    leg.AddEntry(g_obs, "Observed limit (#pm1 #sigma_{theory})","l")
+
+    #lines for the +/1 1 sigma theory
+    y_obs_up = 0.895 * 1.0075
+    y_obs_dn = 0.8699 * 1.013
+    draw_line(0.5625, y_obs_up, 0.62115, y_obs_up, ROOT.TColor.GetColor(c_Observed), line_style=3, line_width=2)
+    draw_line(0.5625, y_obs_dn, 0.62115, y_obs_dn, ROOT.TColor.GetColor(c_Observed), line_style=3, line_width=2)
 
     legend_band_entry(leg, "Expected limit (#pm1 #sigma_{exp})", ROOT.TColor.GetColor(c_BandYellow), 1001, ROOT.TColor.GetColor(c_Expected), 7, 2)
 
 
 
+    leg.AddEntry(prev_wwlike, "ATLAS 8 TeV (WW-like)","f")
+    leg.AddEntry(prev_stop2l, "ATLAS 8 TeV (Stop-2L)","f")
+    leg.AddEntry(prev_stop1l, "ATLAS 8 TeV (Stop-1L)","f")
 
-    ######################################
-    # draw previous results
-    ######################################
-    if conf.show_previous_8TeV_result :
-        rfile = ROOT.TFile(conf.previous_result_file)
-        prev_wwlike = rfile.Get(conf.previous_contours["wwlike"])
-        prev_stop1l = rfile.Get(conf.previous_contours["stop1l"])
-        prev_stop2l = rfile.Get(conf.previous_contours["stop2l"])
-
-        prev_wwlike.SetLineColor(ROOT.TColor.GetColor("#FF4444"))
-        prev_stop1l.SetLineColor(ROOT.TColor.GetColor("#F685E4"))
-        prev_stop2l.SetLineColor(ROOT.TColor.GetColor("#B93B8F"))
-
-        prev_wwlike.SetLineWidth(3)
-        prev_stop1l.SetLineWidth(3)
-        prev_stop2l.SetLineWidth(3)
-
-        #prev_wwlike.SetFillStyle( 1001 )
-        #prev_wwlike.SetFillStyle( 3005 )
-        #prev_wwlike.SetFillColorAlpha(ROOT.TColor.GetColor("#FF4444"), 0.1)
-
-        prev_wwlike.Draw("same")
-        prev_stop1l.Draw("same")
-        prev_stop2l.Draw("same")
-
-        leg.AddEntry(prev_wwlike, "WW-like 8 TeV","l")
-        leg.AddEntry(prev_stop2l, "Stop-2L 8 TeV","l")
-        leg.AddEntry(prev_stop1l, "Stop-1L 8 TeV","l")
 
 
     # now that we have all the contours, draw the legend
@@ -284,15 +311,16 @@ def make_limit_plot(conf) :
         line_.Draw()
 
     if "bWN" in grid :
-        mwline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < m_{b} + m_{W}"
-        mtline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < m_{t}"
-        mxline_text = "#Delta m(#tilde{t}, #tilde{#chi}_{1}^{0}) < 0"
+        mwline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < m_{b} + m_{W}"
+        mtline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < m_{t}"
+        mxline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < 0"
 
-        draw_text( 0.55, 0.51, ROOT.kGray, mwline_text, size=0.025, angle=42)
-        #draw_text( 0.41, 0.4, ROOT.kGray, mwline_text, size=0.025, angle=42)
-        draw_text( 0.75, 0.51, ROOT.kGray, mtline_text, size=0.025, angle=42)
-        #draw_text( 0.54, 0.3, ROOT.kGray+2, mtline_text, size=0.025, angle=42)
-        draw_text( 0.36, 0.51, ROOT.kGray, mxline_text, size=0.025, angle=42)
+        draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=39)
+        draw_text( 0.74, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=41)
+        draw_text( 0.35, 0.51, ROOT.kGray+2, mxline_text, size=0.025, angle=41)
+        #draw_text( 0.55, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=42)
+        #draw_text( 0.75, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=42)
+        #draw_text( 0.36, 0.51, ROOT.kGray+2, mxline_text, size=0.025, angle=42)
     c.Update()
         
 
