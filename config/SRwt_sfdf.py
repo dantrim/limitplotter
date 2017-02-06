@@ -62,9 +62,11 @@ conf.y_title = "m(#tilde{#chi}_{1}^{ 0}) [GeV]"
 # limit plot grid ranges
 #######################################
 conf.xlow   = 100       # GeV
-conf.xhigh  = 450       # GeV
+conf.xhigh  = 475       # GeV
+#conf.xhigh  = 450       # GeV
 conf.ylow   = 0         # GeV 
-conf.yhigh  = 440       # GeV
+conf.yhigh  = 460      # GeV
+#conf.yhigh  = 440       # GeV
 
 
 #######################################

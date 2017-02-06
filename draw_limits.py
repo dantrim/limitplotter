@@ -55,7 +55,8 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
         val, x, y = 0.0, 0.0, 0.0
         x = float(s.mX)
         y = float(s.mY)
-        if x > 400 : continue
+        if x > 440 : continue
+        if y > 330 : continue
         if conf.show_exp_cls :
             val = float(s.expectedCLs[reg_])
         elif conf.show_obs_cls :
@@ -214,11 +215,11 @@ def make_limit_plot(conf) :
 
     # obs
     g_obs       = make_contour(conf, reg_=region, type="obs", pwc=False)
-    #print "make_limit_plot   NOT GRABBING UP/DOWN OBSERVED CONTOURS"
-    #g_obsUp = None
-    #g_obsDn = None
-    g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
-    g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
+    print "make_limit_plot   NOT GRABBING UP/DOWN OBSERVED CONTOURS"
+    g_obsUp = None
+    g_obsDn = None
+    #g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
+    #g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
 
     # exp
     g_exp       = make_contour(conf, reg_=region, type="exp", pwc=False)
@@ -315,12 +316,12 @@ def make_limit_plot(conf) :
         mtline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < m_{t}"
         mxline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < 0"
 
-        draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=39)
-        draw_text( 0.74, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=41)
-        draw_text( 0.35, 0.51, ROOT.kGray+2, mxline_text, size=0.025, angle=41)
-        #draw_text( 0.55, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=42)
-        #draw_text( 0.75, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=42)
-        #draw_text( 0.36, 0.51, ROOT.kGray+2, mxline_text, size=0.025, angle=42)
+        draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.75*0.025, angle=39)
+        draw_text( 0.726, 0.51, ROOT.kGray+2, mtline_text, size=0.75*0.025, angle=40)
+        draw_text( 0.36, 0.51, ROOT.kGray+2, mxline_text, size=0.75*0.025, angle=41)
+        #draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=39)
+        #draw_text( 0.74, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=41)
+        #draw_text( 0.35, 0.51, ROOT.kGray+2, mxline_text, size=0.025, angle=41)
     c.Update()
         
 
