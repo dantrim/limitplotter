@@ -7,6 +7,7 @@
 
 
 import ROOT as r
+import sys
 import array
 
 r.TH1F.__init__._creates        = False
@@ -68,7 +69,7 @@ def get_atlas_label() :
 #  Lumi Label
 # -----------------------------
 def get_lumi_label() :
-    label = "#scale[0.8]{L = 13.3 fb^{-1}, #sqrt{s} = 13 TeV}"
+    label = "#scale[0.8]{L = 36 fb^{-1}, #sqrt{s} = 13 TeV}"
     return label
 
 ''' ---------------------- '''
@@ -196,15 +197,20 @@ def make_contour(conf, reg_="", type="exp", pwc=False) :
             if reg_ == "" :
                 print "make_contour    ERROR you must provide a region"
                 sys.exit()
-            if   type == "obs"   : signif = s.observedSig[reg_]
-            elif type == "obsUp" : signif = s.observedSigUp1s[reg_]
-            elif type == "obsDn" : signif = s.observedSigDn1s[reg_]
-            elif type == "exp"   : signif = s.expectedSig[reg_]
-            elif type == "expUp" : signif = s.expectedSigUp1s[reg_]
-            elif type == "expDn" : signif = s.expectedSigDn1s[reg_]
+            try :
+                if   type == "obs"   : signif = s.observedSig[reg_]
+                elif type == "obsUp" : signif = s.observedSigUp1s[reg_]
+                elif type == "obsDn" : signif = s.observedSigDn1s[reg_]
+                elif type == "exp"   : signif = s.expectedSig[reg_]
+                elif type == "expUp" : signif = s.expectedSigUp1s[reg_]
+                elif type == "expDn" : signif = s.expectedSigDn1s[reg_]
+            except :
+                print "Did not find value for type %s and region %s (%.2f,%.2f)"%(type, reg_, float(s.mX), float(s.mY))
+                pass
 
         #print signif
         print "%s - (%.1f,%.1f) : %.1f"%(type, x, y, float(signif))
+        if signif < 0 : signif = 0
         g.SetPoint(g.GetN(), x, y, float(signif))
 
     hist = None
@@ -245,13 +251,15 @@ def make_exclusion_band(conf, nom, up, down) :
     n_nom   = int(nom.GetN())
     n_up    = int(up.GetN())
     n_down  = int(down.GetN())
-    
+
     # containers for the x-y values for the 
     # three contours that will be fed into
     # the final contours as an array of ROOT doubles
     x_nom, y_nom    = [], []
     x_up, y_up      = [], []
     x_down, y_down  = [], []
+
+    nbins += 1
 
     # fill nominal points
     for i in range(0, n_nom) :
@@ -271,6 +279,8 @@ def make_exclusion_band(conf, nom, up, down) :
         up.GetPoint(i, X, Y)
         x_up.append(X)
         y_up.append(Y)
+    #x_up.append(470)
+    #y_up.append(310)
         
     # check that the up array has the required number of points
     if n_up < nbins :
@@ -284,6 +294,9 @@ def make_exclusion_band(conf, nom, up, down) :
         down.GetPoint(i, X, Y)
         x_down.append(X)
         y_down.append(Y)
+
+    #x_down.append(467)
+    #y_down.append(310)
 
     # check that the down array has the required number of points
     if n_down < nbins :
@@ -313,7 +326,19 @@ def make_exclusion_band(conf, nom, up, down) :
     gr = r.TGraph(nbins, x_nom_arr, y_nom_arr)
     gr_down = r.TGraph(nbins, x_down_arr, y_down_arr)
     gr_up = r.TGraph(nbins, x_up_arr, y_down_arr)
-    gr_shade = r.TGraph(nbins, x_down_arr, y_down_arr)
+
+
+    #gr_shade = r.TGraph(nbins, x_down_arr, y_down_arr)
+
+    print "BY HAND SETTING BAND GRAPH TO CONNECT UPPER AND LOWER GRAPHS"
+    x_up_tmp = [x_down_arr[-1]]
+    y_up_tmp = [y_down_arr[-1]]
+
+    x_up_tmp += x_up_arr
+    y_up_tmp += y_up_arr
+    x_up_arr = x_up_tmp
+    y_up_arr = y_up_tmp
+    gr_shade = r.TGraph(nbins)
     
     for i in range(0, nbins) :
         # set the points for the "upper semi-circle" of the band
@@ -332,6 +357,7 @@ def make_exclusion_band(conf, nom, up, down) :
     gr_shade.SetFillStyle( 1001 )
     gr_shade.SetFillColor( r.TColor.GetColor( c_BandYellow ) )
     gr_shade.Draw("F same")
+    #gr_shade.Draw("l same")
     
     gr.Draw("l same")
     c.Update()

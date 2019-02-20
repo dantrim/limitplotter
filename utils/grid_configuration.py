@@ -98,7 +98,8 @@ class GridConfiguration() :
         for line in lines[1:] : # first line is the header
             line = line.strip()
             if not line : continue
-            cols = line.split("\t")
+            cols = line.split()
+            #cols = line.split("\t")
             mX = float(cols[mXidx])
             mY = float(cols[mYidx])
             s = Signal(mX, mY)
@@ -129,7 +130,8 @@ class GridConfiguration() :
                 for line in lines[1:] :
                     line = line.strip()
                     if not line : continue
-                    cols = line.split("\t")
+                    cols = line.split()
+                    #cols = line.split("\t")
                     mX = float(cols[mXidx])
                     mY = float(cols[mYidx])
                     for s in self.signals :
@@ -154,7 +156,8 @@ class GridConfiguration() :
                 for line in lines[1:] :
                     line = line.strip()
                     if not line : continue
-                    cols = line.split("\t")
+                    #cols = line.split("\t")
+                    cols = line.split()
                     mX = float(cols[mXidx])
                     mY = float(cols[mYidx])
                     for s in self.signals :
@@ -163,6 +166,7 @@ class GridConfiguration() :
                             s.observedCLsUp1s[r.name]   = float(cols[CLsidx])
                             # up obs Sig
                             s.observedSigUp1s[r.name]   = float(cols[obsSigidx])
+
             else :
                 print "fill_raw_results    ERROR up limits results file is \"\""
                 #sys.exit()
@@ -173,7 +177,8 @@ class GridConfiguration() :
                 for line in lines[1:] :
                     line = line.strip()
                     if not line : continue
-                    cols = line.split("\t")
+                    cols = line.split()
+                    #cols = line.split("\t")
                     mX = float(cols[mXidx])
                     mY = float(cols[mYidx])
                     for s in self.signals :

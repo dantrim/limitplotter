@@ -65,9 +65,8 @@ def get_final_name() :
         if upperlimit :
             return "test_%s_%s_%s_Output_upperlimit.root"%(region, channel, grid)
         else :
-            #return "test_%s_%s_%s_Output_hypotest.root"%(region, channel, grid)
+            #return "test_%s_%s_%s_%s_Output_hypotest.root"%(region, channel, grid, syst)
             return "test_%s_%s_%s_Output_fixSigXSec%s_hypotest.root"%(region, channel, grid, syst)
-            #return "%s_%s_%s_%s_Output_hypotest.root"%(region, channel, grid, syst)
     else :
         print "get_final_name    ERROR requested grid not supported. Exiting."
         sys.exit()
@@ -83,7 +82,7 @@ def hadd_workspace_files() :
 
     final_results_filename = get_final_name()
 
-    if grid == "bWN" and syst != "nom" :
+    if grid == "bWN" and syst != "Nominal" :
         print "ERROR currently we only handle the nom case for your grid (%s)"%grid
     #cmd = "hadd -f %s%s %s%s_%s_%s*Output_hypotest.root"%(results_dir, final_results_filename, results_dir, region, channel, grid)
     cmd = "hadd -f %s%s %s%s_%s_%s*Output_fixSigXSec%s_hypotest.root"%(results_dir, final_results_filename, results_dir, region, channel, grid, syst)
@@ -136,8 +135,8 @@ def humanize_list_files(listdir) :
 
 
     in_list = "%stest_%s_%s_%s_Output_fixSigXSec%s_hypotest__1_harvest_list.json"%(listdir, region, channel, grid, syst)
-    #in_list = "%s%s_%s_%s_%s_Output_hypotest__1_harvest_list.json"%(listdir, region, channel, grid, syst)
-    limit_result_dir = "./limit_results/%s_%s_%s/"%(region, channel, grid)
+    #in_list = "%stest_%s_%s_%s_%s_Output_hypotest__1_harvest_list.json"%(listdir, region, channel, grid, syst)
+    limit_result_dir = "./limit_results_Apr6/%s_%s_%s/"%(region, channel, grid)
     mk_limresult = "mkdir -p %s"%(limit_result_dir)
     subprocess.call(mk_limresult, shell=True)
     out_result = "%s%s_%s_%s_%s_limit_results.txt"%(limit_result_dir, region, channel, grid, syst)
@@ -179,7 +178,7 @@ if __name__=="__main__" :
     parser.add_argument("-r", "--region")
     parser.add_argument("-c", "--channel")
     parser.add_argument("-g", "--grid")
-    parser.add_argument("-s", "--syst", help="up, down, or nom")
+    parser.add_argument("-s", "--syst", help="Up, Down, or Nominal")
     parser.add_argument("-u", "--upperlimit", action="store_true", default = False)
     parser.add_argument("-d", "--results_dir", required=True)
     args = parser.parse_args()
@@ -218,6 +217,7 @@ if __name__=="__main__" :
 
         # move the produced harvest_list_files to the list_files directory
         list_file_dir = move_list_files()
+        
 
         # produce human readable limit results
         #list_file_dir = "/data/uclhc/uci/user/dantrim/n0225val/limitplotter/list_files/SRwt_sfdf_bWN/"

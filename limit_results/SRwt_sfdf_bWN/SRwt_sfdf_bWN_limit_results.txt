@@ -1,2 +1,0 @@
-mX	mY	CLs	CLsexp	clsu1s	clsd1s	ObsSig	ExpSig	ExpSigUp1s	ExpSigDn1s
-375.0	225.0	0.3659733	0.2733207	0.5490968	0.1138671	0.34	0.60	-0.12	1.21

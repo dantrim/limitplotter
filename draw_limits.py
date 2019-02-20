@@ -55,8 +55,8 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
         val, x, y = 0.0, 0.0, 0.0
         x = float(s.mX)
         y = float(s.mY)
-        if x > 440 : continue
-        if y > 330 : continue
+        if x > 450 : continue
+        if y > 365 : continue
         if conf.show_exp_cls :
             val = float(s.expectedCLs[reg_])
         elif conf.show_obs_cls :
@@ -67,7 +67,7 @@ def draw_sig_or_cls(conf, reg_="", pwc=False) :
             val = float(s.expectedSig[reg_])
 
         #if "SRwt" in reg_ and y > 300 : continue
-
+        if val < 0 : val = 0
         tex.DrawLatex(x, y, "%.2f"%float(val))
 
     z_title = ""
@@ -98,7 +98,7 @@ def get_limit_output_name(conf) :
     elif conf.show_obs_cls : outname += "obsCLs"
     elif conf.show_exp_sig : outname += "expSig"
     elif conf.show_obs_sig : outname += "obsSig" 
-    outname += ".eps"
+    outname += ".pdf"
     return outname
 
 def get_forbiddenlines(conf) :
@@ -179,6 +179,8 @@ def make_limit_plot(conf) :
         prev_stop1l = rfile.Get(conf.previous_contours["stop1l"])
         prev_stop2l = rfile.Get(conf.previous_contours["stop2l"])
 
+
+
         #prev_wwlike.SetLineColor(ROOT.TColor.GetColor("#FF4444"))
         #prev_stop1l.SetLineColor(ROOT.TColor.GetColor("#F685E4"))
         #prev_stop2l.SetLineColor(ROOT.TColor.GetColor("#B93B8F"))
@@ -186,6 +188,7 @@ def make_limit_plot(conf) :
         prev_wwlike.SetLineColor((ROOT.kAzure+6)+1)
         prev_stop1l.SetLineColor((ROOT.kSpring-5)-1)
         prev_stop2l.SetLineColor((ROOT.kOrange-3)-2)
+
 
         prev_wwlike.SetFillColorAlpha(ROOT.kAzure+6, 0.65)
         prev_stop1l.SetFillColorAlpha(ROOT.kSpring-5, 1.00)
@@ -195,6 +198,7 @@ def make_limit_plot(conf) :
         prev_stop1l.SetLineWidth(3)
         prev_stop2l.SetLineWidth(3)
 
+
         #prev_wwlike.SetFillStyle( 1001 )
         #prev_wwlike.SetFillStyle( 3005 )
         #prev_wwlike.SetFillColorAlpha(ROOT.TColor.GetColor("#FF4444"), 0.1)
@@ -203,9 +207,11 @@ def make_limit_plot(conf) :
         prev_stop2l.Draw("same F")
         prev_wwlike.Draw("same F")
 
+
         prev_stop1l.Draw("same")
         prev_stop2l.Draw("same")
         prev_wwlike.Draw("same")
+
 
 
 
@@ -216,10 +222,10 @@ def make_limit_plot(conf) :
     # obs
     g_obs       = make_contour(conf, reg_=region, type="obs", pwc=False)
     print "make_limit_plot   NOT GRABBING UP/DOWN OBSERVED CONTOURS"
-    g_obsUp = None
-    g_obsDn = None
-    #g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
-    #g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
+    #g_obsUp = None
+    #g_obsDn = None
+    g_obsUp     = make_contour(conf, reg_=region, type="obsUp", pwc=False)
+    g_obsDn     = make_contour(conf, reg_=region, type="obsDn", pwc=False)
 
     # exp
     g_exp       = make_contour(conf, reg_=region, type="exp", pwc=False)
@@ -292,11 +298,24 @@ def make_limit_plot(conf) :
 
 
 
+
+
+    ################################################
+    # ICHEP CONTOURS
+    ################################################
+    #ichep_contour_exp.root  ichep_contour_obs.root
+    prev_ichep_file = ROOT.TFile("ichep_contour_obs.root")
+    prev_ichep = prev_ichep_file.Get("Graph")
+    prev_ichep.SetLineColor(ROOT.kBlue)
+    prev_ichep.SetLineStyle(4)
+    prev_ichep.SetLineWidth(3)
+    prev_ichep.Draw("same")
+    leg.AddEntry(prev_ichep, "ATLAS-CONF 13 TeV (Stop-2L)", "l")
+
+    # add previous (Run-1)
     leg.AddEntry(prev_wwlike, "ATLAS 8 TeV (WW-like)","f")
     leg.AddEntry(prev_stop2l, "ATLAS 8 TeV (Stop-2L)","f")
     leg.AddEntry(prev_stop1l, "ATLAS 8 TeV (Stop-1L)","f")
-
-
 
     # now that we have all the contours, draw the legend
     leg.Draw()
@@ -312,12 +331,13 @@ def make_limit_plot(conf) :
         line_.Draw()
 
     if "bWN" in grid :
-        mwline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < m_{b} + m_{W}"
-        mtline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < m_{t}"
-        mxline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) < 0"
+        mwline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) = m_{b} + m_{W}"
+        mtline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) = m_{t}"
+        mxline_text = "#Delta m(#tilde{t}_{1}, #tilde{#chi}_{1}^{0}) = 0"
 
         draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.75*0.025, angle=39)
-        draw_text( 0.726, 0.51, ROOT.kGray+2, mtline_text, size=0.75*0.025, angle=40)
+        draw_text( 0.783, 0.51, ROOT.kGray+2, mtline_text, size=0.75*0.025, angle=40)
+        #draw_text( 0.726, 0.51, ROOT.kGray+2, mtline_text, size=0.75*0.025, angle=40)
         draw_text( 0.36, 0.51, ROOT.kGray+2, mxline_text, size=0.75*0.025, angle=41)
         #draw_text( 0.54, 0.51, ROOT.kGray+2, mwline_text, size=0.025, angle=39)
         #draw_text( 0.74, 0.51, ROOT.kGray+2, mtline_text, size=0.025, angle=41)
